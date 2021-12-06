@@ -56,7 +56,8 @@ df_news.content =df_news.content.apply(lambda x:x.strip())  # Ltrim and Rtrim of
 
 df_news['content']=[entry.lower() for entry in df_news['content']]
 
-df_news['Word tokenize']= [word_tokenize(entry) for entry in df_news.content]
+df_news['Word_tokenize']= [word_tokenize(entry) for entry in df_news.content]
+print(df_news)
 
 df_news.to_csv('dfNews.csv')
 
