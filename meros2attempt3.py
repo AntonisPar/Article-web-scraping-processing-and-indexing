@@ -8,8 +8,6 @@ nltk.download('names')
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 
-
-
 groups = fetch_20newsgroups()
 
 data_train = fetch_20newsgroups(subset='train', random_state=21)
@@ -19,6 +17,7 @@ test_label = data_test.target
 len(data_train.data), len(data_test.data), len(test_label)
 
 np.unique(test_label)
+
 
 all_names = names.words()
 WNL = WordNetLemmatizer()
@@ -37,7 +36,9 @@ def clean(data):
 x_train = clean(data_train.data)
 print(x_train[0])
 
-from sklearn.feature_extraction.text import TfidfVectorizer
+
 
 tf = TfidfVectorizer(stop_words='english', max_features=1000)
-print(tf)
+X_train = tf.fit_transform(x_train)
+
+print(X_train)
