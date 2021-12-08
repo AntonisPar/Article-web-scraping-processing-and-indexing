@@ -14,14 +14,15 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import operator
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-from meros2 import wordLemmatizer
 
-df_news= pd.read_csv ('dfNews.csv')
-print(df_news.columns)
+df_news= pd.read_csv ('file_clean.csv')
+
+
+
 
 vocabulary = set()
 
-for doc in df_news.Word_tokenize:
+for doc in df_news.Keyword_final:
     vocabulary.update(doc.split(','))
 
 vocabulary=list(vocabulary)
@@ -29,9 +30,11 @@ vocabulary=list(vocabulary)
 # Intializating the tfIdf model
 tfidf = TfidfVectorizer(vocabulary=vocabulary)
 # Fit the TfIdf model
-tfidf.fit(df_news.Word_tokenize)
+tfidf.fit(df_news.Keyword_final)
 # Transform the TfIdf model
-tfidf_tran=tfidf.transform(df_news.Word_tokenize)
+tfidf_tran=tfidf.transform(df_news.Keyword_final)
+
+
 
 
 def gen_vector_T(tokens):
@@ -57,6 +60,7 @@ def cosine_similarity_T(k, query):
     tokens = word_tokenize(str(preprocessed_query))
     q_df = pd.DataFrame(columns=['q_clean'])
     q_df.loc[0, 'q_clean'] = tokens
+    print(q_df)
     q_df['q_clean'] = wordLemmatizer(q_df.q_clean)
     d_cosines = []
 
