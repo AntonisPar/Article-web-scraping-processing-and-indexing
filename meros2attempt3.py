@@ -9,17 +9,8 @@ import os
 nltk.download('names')
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-path = "/home/antonis/Downloads/20news-bydate/20news-bydate-train"
+path = "/Users/antonis/Downloads/20news-bydate/20news-bydate-train"
 
-# groups = fetch_20newsgroups()
-#
-# data_train = fetch_20newsgroups(subset='train', random_state=21)
-# train_label = data_train.target
-# data_test = fetch_20newsgroups(subset='test', random_state=21)
-# test_label = data_test.target
-# len(data_train.data), len(data_test.data), len(test_label)
-#
-# np.unique(test_label)
 df_news = pd.DataFrame()
 for file in os.listdir(path):
     tag = file
