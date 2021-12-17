@@ -47,7 +47,7 @@ def gather(path):
     df['content']=[entry.lower() for entry in df['content']]
     return df
 
-df_news_train = gather(path_train)
+# df_news_train = gather(path_train)
 df_news_test = gather(path_test)
 
 
