@@ -42,7 +42,7 @@ def gather(path):
     df.content =df.content.replace(to_replace='-', value=' ', regex=True)
     df.content =df.content.replace(to_replace='\s+', value=' ', regex=True)    #remove new line
     df.content =df.content.replace(to_replace='  ', value='', regex=True)                #remove double white space
-    df.content =df.content.apply(lambda x:x.strip())  # Ltrim and Rtrim of whitespace
+    df.content =df.content.apply(lambda x:x.strip())  # Ltrim and Rtrim of whitespacegti
 
     df['content']=[entry.lower() for entry in df['content']]
     return df
