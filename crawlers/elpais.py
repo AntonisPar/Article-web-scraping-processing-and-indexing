@@ -63,5 +63,5 @@ for key in list_titles:
         news_contents.remove(value)
         break
 
-with open('Data{0}.json'.format(1), 'w', encoding='utf-8') as file:
+with open('elpais.json'.format(1), 'w', encoding='utf-8') as file:
     json.dump(res, file, ensure_ascii=False)

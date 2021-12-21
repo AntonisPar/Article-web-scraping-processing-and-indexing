@@ -33,7 +33,6 @@ def gather():
             newsite = json.load(f)
 
         else:
-            print('ok')
             continue
         articles = []
         for i in newsite:
@@ -65,8 +64,8 @@ def count_dict(articles_processed):
     word_count = {}
     for word in vocabulary:
         word_count[word] = 0
-        for sent in articles_processed:
-            if word in articles_processed[sent]:
+        for article in articles_processed:
+            if word in articles_processed[article]:
                 word_count[word] += 1
     return word_count
 
@@ -85,8 +84,8 @@ def inverse_doc_freq(word):
     return np.log(len(articles_processed) / word_occurance)
 
 
-def god(articles_processed):
-    gods_dict = {}
+def create_index(articles_processed):
+    inverted_index = {}
     for word in vocabulary:
         wordd = {}
         for i in articles_processed:
@@ -95,16 +94,15 @@ def god(articles_processed):
                 idf = inverse_doc_freq(word)
                 value = tf * idf
                 wordd[i] = value
-        gods_dict[word] = wordd
-    return gods_dict
+        inverted_index[word] = wordd
+    return inverted_index
 
 
 dictionary = {}
 vocabulary,articles_processed,article_ids = gather()
 word_count = count_dict(articles_processed)
 # dictionary = create(vocabulary,articles_processed)
-gods_dict = god(articles_processed)
-
+inverted_index = create_index(articles_processed)
 
 
 def save(file,name):
@@ -112,8 +110,10 @@ def save(file,name):
     json.dump(file, a_file)
     a_file.close()
 
-save(gods_dict,"tf_idf")
+
+save(inverted_index, "tf_idf")
 save(article_ids,"article_map")
+
 
 
 
