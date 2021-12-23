@@ -104,7 +104,8 @@ word_count = count_dict(articles_processed)
 # dictionary = create(vocabulary,articles_processed)
 inverted_index = create_index(articles_processed)
 
-
+print(len(vocabulary))
+print(len(articles_processed))
 def save(file,name):
     a_file = open(name+".json", "w")
     json.dump(file, a_file)
