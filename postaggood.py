@@ -6,6 +6,7 @@ import os
 from nltk.stem import SnowballStemmer
 from nltk.stem import PorterStemmer
 from nltk.corpus import wordnet
+
 import random
 from nltk import FreqDist
 nltk.download('averaged_perceptron_tagger')
@@ -18,8 +19,9 @@ nltk.download('punkt')
 ps = PorterStemmer()
 articles_processed = []
 vocabulary = []
-closed_categories = ['CC','CD','DT','EX','IN','LS','MD','PDT','POS','PRP','PRP$','RP','TO','UH','WDT','WP','WP$','WRB']
 article_ids = []
+
+closed_categories = ['CC','CD','DT','EX','IN','LS','MD','PDT','POS','PRP','PRP$','RP','TO','UH','WDT','WP','WP$','WRB']
 
 def gather():
     articles_processed = {}
@@ -45,14 +47,33 @@ def gather():
             # [res.append(x) for x in test_list if x not in res]
         for article in articles:
             iid = iid + 1
-            article = [word for word in article if word not in stopword]
-            article = [word for word in article if word.isalnum()]
-            article = [ps.stem(word) for word in article]
-            article = [wordnet_lemmatizer.lemmatize(word) for word in article]
-            vocabulary.extend(x for x in article if x not in vocabulary)
+            article = nltk.pos_tag(article)
+            for i in article:
+                print(i)
+                pos_tag = i[1]
+                word = i[0]
+                flag = 0
+                for tag in closed_categories:
+                    if i[1] == tag:
+                        flag = 1
+                if flag == 0:
+                    if pos_tag.startswith("N"):
+                        vocabulary.append(wordnet_lemmatizer.lemmatize(word, wordnet.NOUN))
+                    elif pos_tag.startswith('V'):
+                        vocabulary.append(wordnet_lemmatizer.lemmatize(word, wordnet.VERB))
+                    elif pos_tag.startswith('J'):
+                        vocabulary.append(wordnet_lemmatizer.lemmatize(word, wordnet.ADJ))
+                    elif pos_tag.startswith('R'):
+                        vocabulary.append(wordnet_lemmatizer.lemmatize(word, wordnet.ADV))
             articles_processed[iid] = article
-    print(vocabulary)
+
     return vocabulary,articles_processed,article_ids
+
+
+def custom_lemmatizer(word,tag):
+
+
+
 
 def create(vocabulary,articles_processed):
     # Creating an index for each word in our vocab.

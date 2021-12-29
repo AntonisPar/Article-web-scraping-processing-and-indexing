@@ -70,4 +70,4 @@ print(dict)
 print(len(dict))
 with open('dailymail.json'.format(1), 'w', encoding='utf-8') as file:
     json.dump(dict, file, ensure_ascii=False)
-#
+

@@ -6,6 +6,7 @@ import os
 from nltk.stem import SnowballStemmer
 from nltk.stem import PorterStemmer
 from nltk.corpus import wordnet
+
 import random
 from nltk import FreqDist
 nltk.download('averaged_perceptron_tagger')
@@ -18,8 +19,9 @@ nltk.download('punkt')
 ps = PorterStemmer()
 articles_processed = []
 vocabulary = []
-closed_categories = ['CC','CD','DT','EX','IN','LS','MD','PDT','POS','PRP','PRP$','RP','TO','UH','WDT','WP','WP$','WRB']
 article_ids = []
+
+closed_categories = ['CC','CD','DT','EX','IN','LS','MD','PDT','POS','PRP','PRP$','RP','TO','UH','WDT','WP','WP$','WRB']
 
 def gather():
     articles_processed = {}
@@ -45,14 +47,50 @@ def gather():
             # [res.append(x) for x in test_list if x not in res]
         for article in articles:
             iid = iid + 1
-            article = [word for word in article if word not in stopword]
-            article = [word for word in article if word.isalnum()]
-            article = [ps.stem(word) for word in article]
-            article = [wordnet_lemmatizer.lemmatize(word) for word in article]
-            vocabulary.extend(x for x in article if x not in vocabulary)
+            article = nltk.pos_tag(article)
+            for i in article:
+                tag = i[1]
+                word = i[0]
+                if tag.startswith("N"):
+                    vocabulary.append(wordnet_lemmatizer.lemmatize(word,wordnet.NOUN))
+                elif tag.startswith('V'):
+                    vocabulary.append(wordnet_lemmatizer.lemmatize(word,wordnet.VERB))
+                elif tag.startswith('J'):
+                    vocabulary.append(wordnet_lemmatizer.lemmatize(word,wordnet.ADJ))
+                elif tag.startswith('R'):
+                    vocabulary.append(wordnet_lemmatizer.lemmatize(word,wordnet.ADV))
             articles_processed[iid] = article
     print(vocabulary)
     return vocabulary,articles_processed,article_ids
+
+
+
+def nltk_pos_tagger(nltk_tag):
+    if nltk_tag.startswith('J'):
+        return wordnet.ADJ
+    elif nltk_tag.startswith('V'):
+        return wordnet.VERB
+    elif nltk_tag.startswith('N'):
+        return wordnet.NOUN
+    elif nltk_tag.startswith('R'):
+        return wordnet.ADV
+    else:
+        return None
+
+
+def lemmatize_sentence(sentence):
+    nltk_tagged = nltk.pos_tag(nltk.word_tokenize(sentence))
+    wordnet_tagged = map(lambda x: (x[0], nltk_pos_tagger(x[1])), nltk_tagged)
+    lemmatized_sentence = []
+
+    for word, tag in wordnet_tagged:
+        if tag is None:
+            lemmatized_sentence.append(word)
+        else:
+            lemmatized_sentence.append(lemmatizer.lemmatize(word, tag))
+    return " ".join(lemmatized_sentence)
+
+
 
 def create(vocabulary,articles_processed):
     # Creating an index for each word in our vocab.
