@@ -14,6 +14,7 @@ nltk.download('averaged_perceptron_tagger')
 import json
 
 stopword = stopwords.words('english')
+print(stopword)
 wordnet_lemmatizer = WordNetLemmatizer()
 snowball_stemmer = SnowballStemmer('english')
 nltk.download('wordnet')
