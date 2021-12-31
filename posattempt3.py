@@ -1,4 +1,5 @@
 import nltk
+from dicttoxml import dicttoxml
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import numpy as np
@@ -138,18 +139,21 @@ print(len(vocabulary))
 print(len(articles_processed))
 
 
+
 def save(file, name):
     a_file = open(name + ".json", "w")
     json.dump(file, a_file)
     a_file.close()
 
-
-save(inverted_index, "tf_idf")
+#
+# save(inverted_index, "tf_idf")
 save(article_ids, "article_map")
 
+tfidf = dicttoxml(inverted_index)
 
-
-
+file_handle = open("tfidf.xml","wb")
+tfidf.write(file_handle)
+file_handle.close()
 
 
 
