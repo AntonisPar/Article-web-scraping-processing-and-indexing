@@ -5,7 +5,7 @@ with open('tf_idf.json') as json_file:
     tf_idf = json.load(json_file)
 with open('article_map.json') as json_file:
     map = json.load(json_file)
-
+print(map)
 
 
 print("hello there")
@@ -27,13 +27,13 @@ while select != 0:
             if len(query.split()) >= 1:
                 for term in query.split():
                     for lemma in tf_idf:
-                        if lemma == term:            #an to term tou query yparxei sto eurethrio
-                            result = tf_idf[lemma]   #epistrefei ta articles pou periexoun auton ton oro kai ta tfidf varh
+                        if lemma == term:            #checks if query term exists
+                            result = tf_idf[lemma]   #returns the articles containing this term and the corresponding tfidf values
                             for article in result:
-                                if article not in distinct: #xrhsimopoiw to distinct giati mporei parapanw apo ena  term tou query na epistrefoun to idio article.We dont want duplicates.
+                                if article not in distinct: #using distinct to prevent duplicate articles.Some term may return the same article
                                     distinct.append(article)
-                                    url = map[article] #epistrefw to utl tou article mesw tou article_map
-                                    weight = result[article] #tfidf tou term sto article
+                                    url = map[article] #storing the article's url
+                                    weight = result[article] #saving the term's tfidf value in the article
                                     feedback[url] = weight #gia kathe article dinw san varos to tfidf pou epistrafhke
                                 else:
                                     url = map[article]

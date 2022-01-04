@@ -70,8 +70,6 @@ def gather():
     return vocabulary,articles_processed,article_ids
 
 
-def custom_lemmatizer(word,tag):
-
 
 
 

@@ -27,7 +27,7 @@ def gather():
     article_ids = {}
     id = 0
     iid = 0
-    for file in os.listdir('news'):
+    for file in os.listdir('news'): #loading the news articles from the news folder
 
         if file.endswith('.json'):
             path = os.path.join('news', file)
@@ -39,14 +39,13 @@ def gather():
         articles = []
         for i in newsite:
             id = id + 1
-            article_ids[id] = i
-            newsite[i] = newsite[i].lower()
-            articles.append(nltk.word_tokenize(newsite[i]))
-            # [res.append(x) for x in test_list if x not in res]
+            article_ids[id] = i #creating an id -> link article map
+            newsite[i] = newsite[i].lower() #converting all the letters of the articles to lowercase
+            articles.append(nltk.word_tokenize(newsite[i]))#divide articles into tokens with nltk
         for article in articles:
             iid = iid + 1
-            article = [word for word in article if word not in stopword]
-            article = [word for word in article if word.isalnum()]
+            article = [word for word in article if word not in stopword] #remove some basic stopwords
+            article = [word for word in article if word.isalnum()] #to keep only the alphanumeric characters
             article = [ps.stem(word) for word in article]
             article = [wordnet_lemmatizer.lemmatize(word) for word in article]
             vocabulary.extend(x for x in article if x not in vocabulary)
