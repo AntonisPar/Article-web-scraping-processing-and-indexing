@@ -1,9 +1,5 @@
-import multiprocessing
-from multiprocessing import freeze_support
-from multiprocessing import Process
 
 import nltk
-from dicttoxml import dicttoxml
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import numpy as np
