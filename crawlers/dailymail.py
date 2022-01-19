@@ -64,7 +64,6 @@ for story in dictkeys:
         paragraph = x[p].get_text()
         list_paragraphs.append(paragraph)
         final_article = " ".join(list_paragraphs)
-        print(final_article)
     dict[dictkeys[story]] = final_article #creating a dictionary which have links as keys and articles as values
 print(dict)
 print(len(dict))

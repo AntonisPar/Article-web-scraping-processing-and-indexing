@@ -7,7 +7,7 @@ with open('article_map.json') as json_file:
     map = json.load(json_file)
 print(map)
 
-
+queries = ['apple','bike','banana','covid','omicron','hospital','death']
 print("hello there")
 print("Enter 1 to search via query")
 select = int(input())
@@ -29,6 +29,7 @@ while select != 0:
                     for lemma in tf_idf:
                         if lemma == term:            #checks if query term exists
                             result = tf_idf[lemma]   #returns the articles containing this term and the corresponding tfidf values
+                            print(result)
                             for article in result:
                                 if article not in distinct: #using distinct to prevent duplicate articles.Some term may return the same article
                                     distinct.append(article)

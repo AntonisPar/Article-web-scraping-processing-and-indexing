@@ -20,7 +20,7 @@ links = []
 titles = []
 dictkeys = {}
 for article in coverpage_news:
-    print(article)
+
     link = article.find('a')['href']
     links.append(link)
     title = article.find('h3').text

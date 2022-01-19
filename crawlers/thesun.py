@@ -14,7 +14,7 @@ soup1 = BeautifulSoup(coverpage,'html.parser')
 
 coverpage_news = soup1.find_all('div',class_='teaser-item teaser__small')
 
-print(coverpage_news[4].find('a',class_='teaser-anchor')['data-headline'])
+
 
 
 
@@ -27,7 +27,7 @@ for article in coverpage_news:
     title = article.find('a',class_='teaser-anchor')['data-headline']
     titles.append(title)
     dictkeys[title] = link
-print(dictkeys)
+
 
 dict = {}
 for story in dictkeys:
@@ -45,7 +45,6 @@ for story in dictkeys:
         list_paragraphs.append(paragraph)
         final_article = " ".join(list_paragraphs)
     dict[dictkeys[story]] = final_article
-    print(final_article)
 
 #
 #

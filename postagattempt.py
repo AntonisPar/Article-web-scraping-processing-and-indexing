@@ -7,6 +7,9 @@ import os
 from nltk.stem import SnowballStemmer
 from nltk.stem import PorterStemmer
 from nltk.corpus import wordnet
+import multiprocessing
+from joblib import Parallel, delayed
+import dill as pickle
 
 import random
 from nltk import FreqDist
@@ -35,6 +38,7 @@ def gather():
     article_ids = {}
     id = 0
     iid = 0
+    pool = multiprocessing.Pool()
     for file in os.listdir('news'):#loading the news articles from the news folder
 
         if file.endswith('.json'):
@@ -51,16 +55,18 @@ def gather():
             article_ids[id] = i #creating an id -> link article map
             newsite[i] = newsite[i].lower()  #converting all the letters of the articles to lowercase
             articles.append(nltk.word_tokenize(newsite[i])) #divide articles into tokens with nltk
-        for article in articles:
-            iid = iid + 1
-            article = [word for word in article if word.isalnum()] #to keep only the alphanumeric characters
-            tagged_article = nltk.pos_tag(article) #classifying words into their parts of speech and labeling them accordingly
-            stopwords = gather_stopwords(tagged_article)#creating a list with the stopwords found
-            stopwords.extend(basic_stopwords)#adding some basic stopwords to the list that may not found
-            article = [word for word in article if word not in stopwords]  # remove stopwords
-            article = [custom_lemmatizer(word[0],word[1]) for word in tagged_article] #lemmatizing words with the help of pos tags...word[0] is the word and word[1] is the tag
-            articles_processed[iid] = article #id -> article map
+        articles_processed = Parallel(n_jobs=1)(delayed(execute)(i) for i in articles)
+        print(articles_processed)
     return articles_processed, article_ids
+
+def execute(article):
+    article = [word for word in article if word.isalnum()]  # to keep only the alphanumeric characters
+    tagged_article = nltk.pos_tag(article)  # classifying words into their parts of speech and labeling them accordingly
+    stopwords = gather_stopwords(tagged_article)  # creating a list with the stopwords found
+    stopwords.extend(basic_stopwords)  # adding some basic stopwords to the list that may not found
+    article = [word for word in article if word not in stopwords]  # remove stopwords
+    article = [custom_lemmatizer(word[0], word[1]) for word in tagged_article]  # lemmatizing words with the help of pos tags...word[0] is the word and word[1] is the tag
+    return article
 
 def gather_stopwords(tagged_article):
     stopwords = []
@@ -139,10 +145,11 @@ def create_index(articles_processed):
 
 
 dictionary = {}
-articles_processed, article_ids = gather()
-word_count = count_dict(articles_processed)
-# dictionary = create(vocabulary,articles_processed)
-inverted_index = create_index(articles_processed)
+if __name__ == "__main__":
+    articles_processed, article_ids = gather()
+    word_count = count_dict(articles_processed)
+    # dictionary = create(vocabulary,articles_processed)
+    inverted_index = create_index(articles_processed)
 
 print(len(vocabulary))
 print(len(articles_processed))

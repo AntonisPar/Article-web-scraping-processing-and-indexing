@@ -1,12 +1,20 @@
+import multiprocessing
+from multiprocessing import freeze_support
+from multiprocessing import Process
+
 import nltk
 from dicttoxml import dicttoxml
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import numpy as np
 import os
+import threading
 from nltk.stem import SnowballStemmer
 from nltk.stem import PorterStemmer
 from nltk.corpus import wordnet
+import time
+start_time = time.time()
+import multiprocessing as mp
 
 import random
 from nltk import FreqDist
@@ -15,8 +23,6 @@ nltk.download('averaged_perceptron_tagger')
 import json
 
 basic_stopwords = stopwords.words('english')
-print(len(basic_stopwords))
-print(basic_stopwords)
 wordnet_lemmatizer = WordNetLemmatizer()
 snowball_stemmer = SnowballStemmer('english')
 nltk.download('wordnet')
@@ -51,15 +57,17 @@ def gather():
             article_ids[id] = i #creating an id -> link article map
             newsite[i] = newsite[i].lower()  #converting all the letters of the articles to lowercase
             articles.append(nltk.word_tokenize(newsite[i])) #divide articles into tokens with nltk
+        print(len(articles))
         for article in articles:
             iid = iid + 1
-            article = [word for word in article if word not in basic_stopwords]  # remove basic stopwords
-            article = [word for word in article if word.isalnum()]  # to keep only the alphanumeric characters
+            article = [word for word in article if word not in basic_stopwords and word.isalnum()]  # remove basic stopwords
+            # article = [word for word in article if word.isalnum()]  # to keep only the alphanumeric characters
             tagged_article = nltk.pos_tag(article) #classifying words into their parts of speech and labeling them accordingly
             stopwords = gather_stopwords(tagged_article)  # creating a list with the stopwords found
             article = [custom_lemmatizer(word[0],word[1]) for word in tagged_article] #lemmatizing words with the help of pos tags...word[0] is the word and word[1] is the tag
             article = [word for word in article if word not in stopwords]#remove stopwords found from pos tags
             articles_processed[iid] = article #id -> article map
+
 
     return articles_processed, article_ids
 
@@ -81,16 +89,22 @@ def custom_lemmatizer(word, pos_tag): #takes as argument the word and the pos ta
     if flag == 0: #if not , the word gets lemmatized according to its part of speech
         if pos_tag.startswith("N"):
             word = wordnet_lemmatizer.lemmatize(word, wordnet.NOUN)
+            vocabulary.append(word)
+            return (word)
         elif pos_tag.startswith('V'):
             word = wordnet_lemmatizer.lemmatize(word, wordnet.VERB)
+            vocabulary.append(word)
+            return (word)
         elif pos_tag.startswith('J'):
             word = wordnet_lemmatizer.lemmatize(word, wordnet.ADJ)
+            vocabulary.append(word)
+            return (word)
         elif pos_tag.startswith('R'):
             word = wordnet_lemmatizer.lemmatize(word, wordnet.ADV)
-    vocabulary.append(word)
-
-    return(word)
-
+            vocabulary.append(word)
+            return (word)
+        else:
+            return None
 
 # keep the count of the documents containing a word
 def count_dict(articles_processed):
@@ -118,6 +132,7 @@ def inverse_doc_freq(word): #calculating the idf value
 
 
 def create_index(articles_processed): #creating the inverted index
+    iter = 0
     inverted_index = {}
     for word in vocabulary:
         wordd = {} #using this dictionary to create the final nested dictionary
@@ -128,27 +143,30 @@ def create_index(articles_processed): #creating the inverted index
                 value = tf * idf
                 wordd[i] = value
         inverted_index[word] = wordd #append the wordd dictionary to the inverted_index dictionary using as key the word
+        iter = iter + 1
     return inverted_index
 
 
 dictionary = {}
+# articles_processed, article_ids = gather()
+
 articles_processed, article_ids = gather()
+print('OKFF')
+print(len(np.unique(vocabulary)))
+vocabulary = set(vocabulary)
 word_count = count_dict(articles_processed)
+print("OKBB")
 inverted_index = create_index(articles_processed)
-
-print(len(vocabulary))
 print(len(articles_processed))
-
-
 
 def save(file, name):
     a_file = open(name + ".json", "w")
     json.dump(file, a_file)
     a_file.close()
-
-#
 save(inverted_index, "tf_idf")
 save(article_ids, "article_map")
+
+print("--- %s seconds ---" % (time.time() - start_time))
 
 # tfidf = dicttoxml(inverted_index)
 #
