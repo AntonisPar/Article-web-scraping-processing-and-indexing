@@ -148,7 +148,7 @@ def create_index(articles_processed): #creating the inverted index
 
 
 dictionary = {}
-# articles_processed, article_ids = gather()
+
 
 articles_processed, article_ids = gather()
 print('OKFF')
