@@ -5,9 +5,7 @@ with open('tf_idf.json') as json_file:
     tf_idf = json.load(json_file)
 with open('article_map.json') as json_file:
     map = json.load(json_file)
-print(map)
 
-queries = ['apple','bike','banana','covid','omicron','hospital','death']
 print("hello there")
 print("Enter 1 to search via query")
 select = int(input())
